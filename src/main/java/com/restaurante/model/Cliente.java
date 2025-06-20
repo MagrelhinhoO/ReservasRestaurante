@@ -17,8 +17,6 @@ public class Cliente {
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reserva> reservas = new ArrayList<>();
 
-    public Cliente() {}
-
     public Cliente(String nome, String email) {
         this.nome = nome;
         this.email = email;
