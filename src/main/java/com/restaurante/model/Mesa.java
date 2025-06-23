@@ -1,65 +1,93 @@
 package com.restaurante.model;
 
 import jakarta.persistence.*;
+import com.restaurante.enums.StatusMesa;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@Table(name = "mesas")
 public class Mesa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false, unique = true)
     private int numero;
+
+    @Column(nullable = false)
     private int capacidade;
-    private boolean disponivel;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StatusMesa status;
+
+    @OneToMany(mappedBy = "mesa", cascade = CascadeType.ALL)
+    private List<Reserva> reservas = new ArrayList<>();
 
     public Mesa() {}
 
-    public Mesa(int numero, int capacidade, boolean disponivel) {
+    public Mesa(int numero, int capacidade, StatusMesa status) {
         this.numero = numero;
         this.capacidade = capacidade;
-        this.disponivel = disponivel;
+        this.status = status;
     }
 
+    // Getters e Setters
     public int getId() {
         return id;
-    }
-
-    public int getNumero() {
-        return numero;
-    }
-
-    public int getCapacidade() {
-        return capacidade;
-    }
-
-    public boolean isDisponivel() {
-        return disponivel;
     }
 
     public void setId(int id) {
         this.id = id;
     }
 
+    public int getNumero() {
+        return numero;
+    }
+
     public void setNumero(int numero) {
+        if (numero <= 0) {
+            throw new IllegalArgumentException("Número da mesa deve ser positivo");
+        }
         this.numero = numero;
     }
 
+    public int getCapacidade() {
+        return capacidade;
+    }
+
     public void setCapacidade(int capacidade) {
+        if (capacidade <= 0) {
+            throw new IllegalArgumentException("Capacidade deve ser positiva");
+        }
         this.capacidade = capacidade;
     }
 
-    public void setDisponivel(boolean disponivel) {
-        this.disponivel = disponivel;
+    public StatusMesa getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusMesa status) {
+        this.status = status;
+    }
+
+    public boolean isDisponivel() {
+        return status == StatusMesa.DISPONIVEL;
+    }
+
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
+
+    public void setReservas(List<Reserva> reservas) {
+        this.reservas = reservas;
     }
 
     @Override
     public String toString() {
-        return "Mesa{" +
-                "id=" + id +
-                ", numero=" + numero +
-                ", capacidade=" + capacidade +
-                ", disponivel=" + disponivel +
-                '}';
+        return "Mesa [id=" + id + ", numero=" + numero + ", capacidade=" + capacidade + ", status=" + status + "]";
     }
 }
