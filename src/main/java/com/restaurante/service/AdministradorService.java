@@ -10,6 +10,13 @@ public class AdministradorService {
     private final AdministradorRepository repository = new AdministradorRepository();
 
     public void cadastrarAdministrador(String nome, String email) {
+        if (nome == null || nome.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nome não pode ser vazio");
+        }
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email não pode ser vazio");
+        }
+
         Administrador admin = new Administrador(nome, email);
         repository.salvar(admin);
     }
@@ -23,6 +30,9 @@ public class AdministradorService {
     }
 
     public void atualizar(Administrador admin) {
+        if (admin == null) {
+            throw new IllegalArgumentException("Administrador não pode ser nulo");
+        }
         repository.atualizar(admin);
     }
 
