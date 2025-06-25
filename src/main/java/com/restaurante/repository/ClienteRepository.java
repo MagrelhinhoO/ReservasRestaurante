@@ -5,12 +5,15 @@ import jakarta.persistence.EntityManager;
 import java.util.List;
 
 public class ClienteRepository {
-
     private EntityManager em = JPAUtil.getEntityManager();
 
     public void salvar(Cliente cliente) {
         em.getTransaction().begin();
-        em.persist(cliente);
+        if (cliente.getId() == 0) {
+            em.persist(cliente);
+        } else {
+            em.merge(cliente);
+        }
         em.getTransaction().commit();
     }
 
@@ -22,22 +25,12 @@ public class ClienteRepository {
         return em.createQuery("FROM Cliente", Cliente.class).getResultList();
     }
 
-    public void atualizar(Cliente cliente) {
-        em.getTransaction().begin();
-        em.merge(cliente);
-        em.getTransaction().commit();
-    }
-
     public void deletar(int id) {
+        em.getTransaction().begin();
         Cliente cliente = buscarPorId(id);
         if (cliente != null) {
-            em.getTransaction().begin();
             em.remove(cliente);
-            em.getTransaction().commit();
         }
-    }
-
-    public void fechar() {
-        em.close();
+        em.getTransaction().commit();
     }
 }

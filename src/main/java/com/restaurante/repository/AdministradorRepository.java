@@ -5,12 +5,15 @@ import jakarta.persistence.EntityManager;
 import java.util.List;
 
 public class AdministradorRepository {
-
     private EntityManager em = JPAUtil.getEntityManager();
 
     public void salvar(Administrador admin) {
         em.getTransaction().begin();
-        em.persist(admin);
+        if (admin.getId() == 0) {
+            em.persist(admin);
+        } else {
+            em.merge(admin);
+        }
         em.getTransaction().commit();
     }
 
@@ -22,22 +25,12 @@ public class AdministradorRepository {
         return em.createQuery("FROM Administrador", Administrador.class).getResultList();
     }
 
-    public void atualizar(Administrador admin) {
-        em.getTransaction().begin();
-        em.merge(admin);
-        em.getTransaction().commit();
-    }
-
     public void deletar(int id) {
+        em.getTransaction().begin();
         Administrador admin = buscarPorId(id);
         if (admin != null) {
-            em.getTransaction().begin();
             em.remove(admin);
-            em.getTransaction().commit();
         }
-    }
-
-    public void fechar() {
-        em.close();
+        em.getTransaction().commit();
     }
 }

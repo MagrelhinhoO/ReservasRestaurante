@@ -2,16 +2,18 @@ package com.restaurante.repository;
 
 import com.restaurante.model.Mesa;
 import jakarta.persistence.EntityManager;
-
 import java.util.List;
 
 public class MesaRepository {
-
     private EntityManager em = JPAUtil.getEntityManager();
 
     public void salvar(Mesa mesa) {
         em.getTransaction().begin();
-        em.persist(mesa);
+        if (mesa.getId() == 0) {
+            em.persist(mesa);
+        } else {
+            em.merge(mesa);
+        }
         em.getTransaction().commit();
     }
 
@@ -24,25 +26,15 @@ public class MesaRepository {
     }
 
     public List<Mesa> listarDisponiveis() {
-        return em.createQuery("FROM Mesa m WHERE m.disponivel = true", Mesa.class).getResultList();
-    }
-
-    public void atualizar(Mesa mesa) {
-        em.getTransaction().begin();
-        em.merge(mesa);
-        em.getTransaction().commit();
+        return em.createQuery("FROM Mesa WHERE status = 'DISPONIVEL'", Mesa.class).getResultList();
     }
 
     public void deletar(int id) {
+        em.getTransaction().begin();
         Mesa mesa = buscarPorId(id);
         if (mesa != null) {
-            em.getTransaction().begin();
             em.remove(mesa);
-            em.getTransaction().commit();
         }
-    }
-
-    public void fechar() {
-        em.close();
+        em.getTransaction().commit();
     }
 }
