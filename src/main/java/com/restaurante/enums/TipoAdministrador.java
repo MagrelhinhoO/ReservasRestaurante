@@ -1,14 +1,13 @@
 package com.restaurante.enums;
 
-public enum StatusMesa {
-    DISPONIVEL("Disponível"),
-    INDISPONIVEL("Indisponível"),
-    RESERVADA("Reservada"),
-    EM_USO("Em Uso");
+public enum TipoAdministrador {
+    GERENTE("Gerente"),
+    FUNCIONARIO("Funcionário"),
+    ADMINISTRADOR("Administrador Geral");
 
     private final String descricao;
 
-    StatusMesa(String descricao) {
+    TipoAdministrador(String descricao) {
         this.descricao = descricao;
     }
 
