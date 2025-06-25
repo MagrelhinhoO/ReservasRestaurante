@@ -1,28 +1,28 @@
 package com.restaurante.model;
 
+import com.restaurante.enums.TipoAdministrador;
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "funcionarios")
 public class Funcionario extends Administrador {
-
     @Column(nullable = false, length = 50)
     private String cargo;
 
-    public Funcionario() {}
+    public Funcionario() {
+        super();
+        this.tipo = TipoAdministrador.FUNCIONARIO;
+    }
 
     public Funcionario(String nome, String email, String cargo) {
-        super(nome, email);
+        super(nome, email, TipoAdministrador.FUNCIONARIO);
         this.cargo = cargo;
     }
 
-    // Getters e Setters
-    public String getCargo() {
-        return cargo;
-    }
-
+    public String getCargo() { return cargo; }
     public void setCargo(String cargo) {
         if (cargo == null || cargo.trim().isEmpty()) {
             throw new IllegalArgumentException("Cargo não pode ser vazio");
@@ -32,6 +32,6 @@ public class Funcionario extends Administrador {
 
     @Override
     public String toString() {
-        return "Funcionario [id=" + id + ", nome=" + nome + ", email=" + email + ", cargo=" + cargo + "]";
+        return super.toString() + " - Cargo: " + cargo;
     }
 }
